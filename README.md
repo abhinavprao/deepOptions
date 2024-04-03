@@ -35,19 +35,19 @@ There are different ways to view this problem -
 1. Since the parameters of the PDE are random variables, it is a case of simply a parametric stochastic differential equation, with a stochastic process as solution. We can approximate using PINNs and use MCMC-type methods to characterize the posterior.
 2. More appropriately and simply, the PDE can be viewed as an operator over the field function, of the form $\mathcal{K} : \mathcal{\Psi}(\sigma, r) \rightarrow C_{\delta, r}$, mapping the parameters to a functions in the $\mathcal{L}^2$ space.
 
-## What is an Operator, and how do we learn it?
+## What is an Operator, and how do we learn it using Deep Operator Networks (DeepOnets)?
 
-An operator, simply put, is a maps a function to a function, for example $\frac{d(\cdot)}{dx}$. Symbolically $G: V \rightarrow C$ such that $f(x) := G(u)(x)\;\;\;$ for $f\in C$ and $u \in V$.
-
-Turns out, neural networks are [universal approximators of nonlinear operators](https://ieeexplore.ieee.org/document/392253) just like they are universal approximators of functions. But how can we input functions into a neural networks? This is a bit unintuitive at first, and once you write it down, it might seem a bit ad-hoc, but fundamentally there is no difference between operator learning and function learning from a neural network view-point. We essentially just pose the operator learning as a function learning problem. We follow the formulation and conventions of [Lu et al.](https://arxiv.org/abs/1910.03193)
-
-Let us just consider scalar valued functions for now, multiple inputs - single output. Then 
-
-We choose the latter problem formulation and we treat the operator on a collocation of points following the formulation of Karniadak:
+An operator, simply put, is a maps a function to a function, for example $\frac{d(\cdot)}{dx}$. We can say, $G: V \rightarrow C$ such that $f(x) := G(u)(x)\;$ for $f\in C$ and $u \in V$. As it turns out, neural networks are [universal approximators of nonlinear operators](https://ieeexplore.ieee.org/document/392253) just like they are universal approximators of functions. But how can we input functions into a neural networks? This is unintuitive at first, and once we write it down, it might even seem a bit ad-hoc. But fundamentally, there is no difference between operator learning and function learning from the point of view of a neural network. We essentially just pose operator learning as a function learning problem. We follow the formulation and conventions of [Lu et al.](https://arxiv.org/abs/1910.03193) with minor deviances to match our requirements. We can use the problem at hand to formulate the operator learning problem as follows:
 
 $$
-B_w(t, S ;\sigma, r) = \left(\sum_{i=1}^n \Beta_{x,i}(\delta)\Psi_{x,i}(t, S) \;, \;\sum_{i=1}^n \Beta_{x,i}(\sigma, r)\Psi_{x,i}(t, S)\right)
-\sim C_{(\sigma, r)}(t, S)$$
+C_{(\sigma, r)}(t, S) =  \;\sum_{i=1}^n \Psi^{(w_{\psi})}_i(t, S)B^{(w_b)}_i(\sigma, r)
+$$
+
+Where,<br>
+$\rightarrow C_{(\sigma, r)}(t, S)$ is the option price at time $t$, security price $S$ with volatility $\sigma$ in a market with risk-free interest rate $r$.<br>
+$\rightarrow n$ is a latent dimension size (will be clarified further).<br>
+$\rightarrow B^{(w_b)}_i$ is the $i^{th}$ of $n$ scalar valued neural network or  (here, the branch network) with weights $w_b$.
+
 
 with the loss function spelled out as,
 
