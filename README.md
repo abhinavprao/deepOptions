@@ -46,15 +46,41 @@ $$
 Where,<br>
 $\rightarrow C_{(\sigma, r)}(t, S)$ is the option price at time $t$, security price $S$ with volatility $\sigma$ in a market with risk-free interest rate $r$.<br>
 $\rightarrow n$ is a latent dimension size (will be clarified further).<br>
-$\rightarrow B^{(w_b)}_i$ is the $i^{th}$ of $n$ scalar valued neural network or  (here, the branch network) with weights $w_b$.
+$\rightarrow B^{(w_b)}_i$ is the $i^{th}$ of $n$ scalar valued neural networks or the $i^{th}$ output of a stacked neural network of the form  $B: \mathbb{R}^2 \rightarrow \mathbb{R}^n$ with weights $w_b$, also known as the branch network.
+
+$\rightarrow \Psi^{(w_b)}_i$ is the $i^{th}$ of $n$ scalar valued neural networks or the $i^{th}$ output of a stacked neural network of the form  $\Psi: \mathbb{R}^2 \rightarrow \mathbb{R}^n$ with weights $w_{\psi}$, also  known as the trunk network.
 
 
-with the loss function spelled out as,
+## How do we train such a network?
+
+The universal approximation theorems are only one side of the coin. The other side is the universal approximation for an algorithm that can actually find such neural networks (by finding the appropriate weights). This is the[ stochastic approximation method](https://projecteuclid.org/journals/annals-of-mathematical-statistics/volume-22/issue-3/A-Stochastic-Approximation-Method/10.1214/aoms/1177729586.full), where Robbins and Monroe posit that the minimum of a loss function $L$ is coincides with minima of the expectation of the form $\mathbb{E}_{X}[f(L)]$, where $X$ is the 'data'.
+
+
+For our case we can spell out our loss function as,
 
 $$
-\mathcal{L}(w) = \int_0^{0.1} \int_0^1  \int_0^\infty \int_0^T \left\{\left(\dfrac{\partial}{\partial t} + \dfrac{1}{2}\sigma^2 S^2 \dfrac{\partial^2}{\partial S^2} + rS\dfrac{\partial}{\partial S} -r \cdot() \right)\left[C_{(\sigma, r)}(t, S)\right] \right\}dt dS d\sigma dr
+\mathcal{L}(w) = \int_0^{r_{max}} \int_0^{\sigma_{max}}  \int_0^T \int_0^{S_{max}} R(w)dt dS d\sigma dr
 $$
 
+
+Where,
+
 $$
-\mathcal{L}(w) = \int_0^{r_{max}} \int_0^{\sigma_{max}}  \int_0^\infty \int_0^T  B_w(t, S ;\sigma, r) dt dS d\sigma dr
+R(w) = \left|\left\{\left(\dfrac{\partial}{\partial t} + \dfrac{1}{2}\sigma^2 S^2 \dfrac{\partial^2}{\partial S^2} + rS\dfrac{\partial}{\partial S} -r \cdot() \right)\left[\;\sum_{i=1}^n \Psi^{(w_{\psi})}_i(t, S)B^{(w_b)}_i(\sigma, r)\right]\right\}\right|^2
 $$
+
+1. We can easily convert the integrals into expectations by making a few assumtions, $r \sim \mathcal{U}(0, r_{max})$, $\sigma \sim \mathcal{U}(0, \sigma_{max})$ and so on. 
+2. And then we approximate the expectation using sampling averages.
+3. Robbins Monroe guarantees this converges to the required minimum as long as the learning rate satisfies the convex conditions.
+
+## Discussion:
+
+The model we have used here is a simple MLP, and training is rather fast and quick:
+
+![alt text](assets/losses.png)
+
+We can now easily sample each of $r, \sigma, S, t$ and plot our cost curves and evaluate required analytics:
+
+![alt text](assets/evaluations.png)
+
+This allows vast sampling, enabling MCMC type of analysis.
