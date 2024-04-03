@@ -4,7 +4,7 @@ A demonstration for pricing call options using neural networks.
 
 ## The Black Scholes Merton Equation:
 
-Consider an security valued at $S$. For a call option superjacent to this security with strike price $K$ and maturation time $T$, the apporpriate price for the call option $C(t, S) \;\; \forall t < T \; \; \& \;\; S \in [0,\infty)$ is given by the Black Scholes Merton equation:
+Consider an security valued at $S$. For a call option superjacent to this security with strike price $K$ and maturation time $T$, the apporpriate price for the call option $C(t, S)$, $\forall t < T$, and, $S \in [0,\infty)$ is given by the Black Scholes Merton equation:
 
 $$
 \dfrac{\partial C}{\partial t} + \dfrac{1}{2}\sigma^2 S^2 \dfrac{\partial^2 C}{\partial S^2} + rS\dfrac{\partial C}{\partial S} -rC = 0
@@ -66,9 +66,8 @@ $$
 Where,
 
 $$
-R(w) = \left|\left\{\left(\dfrac{\partial}{\partial t} + \dfrac{1}{2}\sigma^2 S^2 \dfrac{\partial^2}{\partial S^2} + rS\dfrac{\partial}{\partial S} -r \cdot() \right)\left[\;\sum_{i=1}^n \Psi^{(w_{\psi})}_i(t, S)B^{(w_b)}_i(\sigma, r)\right]\right\}\right|^2
+R(w) = \left|\lbrace\left(\dfrac{\partial}{\partial t} + \dfrac{1}{2}\sigma^2 S^2 \dfrac{\partial^2}{\partial S^2} + rS\dfrac{\partial}{\partial S} -r \cdot() \right)\left[\;\sum_{i=1}^n \Psi^{(w_{\psi})}_i(t, S)B^{(w_b)}_i(\sigma, r)\right]\rbrace\right|^2
 $$
-
 1. We can easily convert the integrals into expectations by making a few assumtions, $r \sim \mathcal{U}(0, r_{max})$, $\sigma \sim \mathcal{U}(0, \sigma_{max})$ and so on. 
 2. And then we approximate the expectation using sampling averages.
 3. Robbins Monroe guarantees this converges to the required minimum as long as the learning rate satisfies the convex conditions.
