@@ -32,7 +32,6 @@ class MLPWithFourierFeatures(eqx.Module):
     """
     A neural net that calculates fourier features of the inputs and
     then applies the usual affine transformations of an MLP
-    with the option of an output transformation
     """
     input_size: int
     output_size: int
